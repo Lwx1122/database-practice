@@ -1,0 +1,39 @@
+server:
+  port: 8708
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: practice-security
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/practice?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&serverTimezone=GMT%2B8&useSSL=false&autoReconnect=true&failOverReadOnly=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#  redis:
+#    host: 127.0.0.1
+#    port: 6379
+#    # password: 123456
+#    database: 2
+mybatis-plus:
+  configuration:
+    mapUnderscoreToCamelCase: false
+eureka:
+  instance:
+#    preferIpAddress: true
+    ipaddress: localhost
+    instance-id: ${spring.application.name}:${eureka.instance.ipaddress}:${server.port}
+    hostname: localhost
+    app name: ${spring.application.name}
+  client:
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.ipaddress}:8701/eureka
+logging:
+  level:
+    root: trace
+patterns:
+  - /login
+  - /user/**
+

@@ -1,0 +1,75 @@
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+server:
+  port: 80
+  servlet:
+    session:
+      timeout: 6000
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/practice?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&serverTimezone=GMT%2B8&useSSL=false&autoReconnect=true&failOverReadOnly=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: practice-gateway
+  cloud:
+    gateway:
+      globalise:
+        cors-configurations:
+          '[/**]':
+            allowCredentials: true
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+        httpclient:
+          responseTimeout: 50000
+          connectTimeout: 50000
+      routes:
+        - id: practice-system-web-route
+          uri: lb://practice-system-web  # 实际的服务地址
+          predicates:
+            - Path=/practice-system-web/**
+#          filters:
+#            - StripPrefix=1
+        - id: practice-security-route
+          uri: lb://practice-security  # 实际的服务地址
+          predicates:
+            - Path=/practice-security/**
+#          filters:
+#            - StripPrefix=1
+        - id: order-web-route
+          uri: lb://order-web  # 实际的服务地址
+          predicates:
+            - Path=/order-web/**
+#          filters:
+#            - StripPrefix=1
+
+
+eureka:
+  instance:
+    hostname: localhost
+    preferIpAddress: false
+    ipaddress: localhost
+    instance-id: ${spring.application.name}:${eureka.instance.ipaddress}:${server.port}
+  client:
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.ipaddress}:8701/eureka
+patterns:
+  - /actuator/**
+ribbon:
+  eureka:
+    enabled: true # 使用Eureka作为服务发现
+  MaxAutoRetries: 1 # 重试其他服务器的次数
+  MaxAutoRetriesNextServer: 1 # 切换到下一个服务器的最大重试次数
+  OkToRetryOnAllOperation: true # 对所有操作请求都进行重试
+  ReadTimeout: 5000 # 请求读取超时时间
+  ConnectTimeout: 3000 # 请求连接超时时间

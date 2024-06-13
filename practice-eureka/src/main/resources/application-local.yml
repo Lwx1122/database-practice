@@ -1,0 +1,10 @@
+
+server:
+  port: 8701  # Eureka服务器的端口
+
+eureka:
+  client:
+     registerWithEureka: false  # 不将自己注册为客户端
+     fetchRegistry: false  # 不去检索服务
+   server:
+     enable-self-preservation: false  # 禁用自我保护模式，适用于开发环境
